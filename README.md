@@ -70,6 +70,12 @@ Before running the application, you may need to configure the following in your 
    app.config['ADMIN_API_KEY'] = 'admin_api_key'
    ```
 
+- **Environment Variables**: create a .env file and put all environment variabls in it.
+     ```python
+    host=localhost
+     ... etc
+   ```
+
 ## API Endpoints
 
 ### Home
