@@ -4,12 +4,11 @@ from models import db
 from urllib.parse import quote_plus
 from dotenv import load_dotenv
 import os
+from flask_migrate import Migrate
 load_dotenv()
 
 
 app = Flask(__name__)
-
-
 
 user=os.getenv('user')
 passwd=os.getenv('pwd')
@@ -26,7 +25,12 @@ app.config['ADMIN_API_KEY'] = os.getenv('ADMIN_API_KEY')
 
 db.init_app(app)
 jwt = JWTManager(app)
+migrate = Migrate(app, db)
 
+# create tables in db if not already exists
+with app.app_context():
+    db.create_all() 
+    
 
 from routes import main_blueprint
 app.register_blueprint(main_blueprint)

@@ -7,7 +7,6 @@ import re
 
 main_blueprint = Blueprint('main', __name__)
 
-
 def is_valid_email(email):
     email_regex = r'^[\w\.-]+@[\w\.-]+\.\w{2,}$'
     return re.match(email_regex, email)
@@ -32,6 +31,15 @@ def home():
 
 
 # Register a User
+
+'''
+{
+    "name":"Nitin",
+    "email":"nitin@gmail.com",
+    "password":"nitin123",
+    "role":"user"
+}
+'''
 @main_blueprint.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -60,6 +68,14 @@ def register():
 
 
 # Login User
+
+'''
+{
+    "email":"a@gmail.com",
+    "password":"nitin123"
+}
+'''
+
 @main_blueprint.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -74,8 +90,15 @@ def login():
 
 
 
-
 # Add a New Train (admin only)
+
+{
+    "name":"Deepali Exp",
+    "source":"Lonawala",
+    "destination":"Bhiwadi",
+    "total_seats":100
+}
+
 @main_blueprint.route('/train', methods=['POST'])
 @jwt_required()
 @admin_required
@@ -98,6 +121,13 @@ def add_train():
 
 
 # Get Seat Availability
+
+'''
+{
+   "source":"Lonawala",
+    "destination":"Bhiwadi"
+}
+'''
 @main_blueprint.route('/availability', methods=['POST'])
 def get_availability():
     data = request.get_json()
@@ -128,6 +158,12 @@ def get_availability():
 
 
 # Book a Seat
+'''
+{
+    "train_id":1,
+    "seats":20
+}
+'''
 @main_blueprint.route('/book', methods=['POST'])
 @jwt_required()
 def book_seat():
@@ -156,8 +192,11 @@ def book_seat():
 
 
 
-
 # Get Specific Booking Details
+
+'''
+http://127.0.0.1:5000/booking/1
+'''
 @main_blueprint.route('/booking/<int:booking_id>', methods=['GET'])
 @jwt_required()
 def get_booking(booking_id):
@@ -173,3 +212,15 @@ def get_booking(booking_id):
         "source": train.source,
         "destination": train.destination
     })
+
+
+
+# @main_blueprint.route('/users',methods=['GET'])
+# def get_all_users():
+    
+#     try:
+#         results = db.session.query(User, Booking).join(Booking, User.id == Booking.user_id).all()
+
+#     except Exception as e :
+#         return {"Error":e}     
+        
