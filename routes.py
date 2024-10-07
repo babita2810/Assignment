@@ -14,7 +14,7 @@ def is_valid_email(email):
 
 def admin_required(fn):
     @wraps(fn)
-    @jwt_required()
+    @jwt_required() # check for jwt token
     def wrapper(*args, **kwargs):
         current_user_id = get_jwt_identity()
         user = User.query.get(current_user_id)
