@@ -1,5 +1,3 @@
 /.env
-/flask-mysql-rest-crud-v1
-/instance
 /venv
 /__pycache__

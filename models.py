@@ -24,6 +24,3 @@ class Booking(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     train_id = db.Column(db.Integer, db.ForeignKey('trains.id'), nullable=False)
     seats_booked = db.Column(db.Integer, nullable=False)
-
-
-
