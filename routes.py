@@ -29,7 +29,6 @@ def home():
     return "Welcome to IRCTC API"
 
 
-
 # Register a User
 
 '''
@@ -169,13 +168,17 @@ def get_availability():
 def book_seat():
     data = request.get_json()
     user_id = get_jwt_identity()
-    train = Train.query.get(data['train_id'])
+
+# simple
+    # train = Train.query.get(data['train_id'])   
+
+# handle race condition
+    train=db.session.query(Train).with_for_update().filter_by(id=data['train_id']).first()
 
     if not train:
         return jsonify({"msg": "Train not found"})
-
-    booked_seats = db.session.query(db.func.sum(Booking.seats_booked)).filter_by(train_id=train.id).scalar() or 0
-    available_seats = train.total_seats - booked_seats
+    
+    available_seats = train.total_seats 
 
     if available_seats < data['seats']:
         return jsonify({"msg": "Not enough seats available"})
@@ -187,6 +190,7 @@ def book_seat():
         db.session.commit()
         return jsonify({"msg": "Booking successful", "booking_id": new_booking.id})
     except Exception as e:
+        db.session.rollback()  # rollback in case of error 
         return jsonify({"msg": str(e)})
 
 
@@ -215,12 +219,27 @@ def get_booking(booking_id):
 
 
 
-# @main_blueprint.route('/users',methods=['GET'])
-# def get_all_users():
-    
-#     try:
-#         results = db.session.query(User, Booking).join(Booking, User.id == Booking.user_id).all()
 
-#     except Exception as e :
-#         return {"Error":e}     
-        
+# get all trains
+'''
+@main_blueprint.route('/trains')
+def get_all_trains():
+
+    trains = Train.query.all()
+    if not trains:
+        return jsonify({"msg": "No trains found for the given source and destination."})
+
+    result = []
+    for train in trains:
+        result.append({
+            "id": train.id,
+            "name": train.name,
+            "available_seats": train.total_seats,
+            "source": train.source,
+            "destination": train.destination
+        })
+    return jsonify(result)
+
+
+'''
+
